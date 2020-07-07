@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #chatBotContainer{
+            border: none;
+            background: transparent;
+            position: fixed;
+            right:10px;
+            bottom:10px;
+            z-index:9999;
+        }
+        .showChatBox{
+            max-width: 370px;
+            width: 100%;
+            height:618px;
+        }
+        .hideChatBox{
+            width:100px;
+            height:100px;
+        }
+        @media screen and (max-width:500px){
+            .showChatBox{
+                height:80%;
+            }
+        }
+        @media screen and (max-width:375px){
+            #chatBotContainer.showChatBox{
+                max-width:100%;
+                right:0px;
+                bottom:0px;
+            }
+        }
+    </style>
+    <script>
+        window.onload = function(){
+            function getUrl(){
+                // change the url here.
+                var url = 'https://ccchatbot.sit.income.com.sg/morfeuswebsdk/';
+                //var url = 'https://localhost:8443/morfeuswebsdk/';
+                return url;
+            }
+            function handleEvents(){
+                window.addEventListener('message',function(event){
+                    var data = event.data;
+                    if(data.type ==='showChatBox' ){
+                        document.querySelector('#chatBotContainer').classList.remove('hideChatBox');                       
+                        document.querySelector('#chatBotContainer').classList.add('showChatBox');
+                    }
+                    if(data.type === 'hideChatBox'){
+                        document.querySelector('#chatBotContainer').classList.remove('showChatBox');
+                        document.querySelector('#chatBotContainer').classList.add('hideChatBox');                            
+                    }
+                },false);
+            }
+            function parseQueryParams(){
+                var queryParams = {};
+                if (window.location.href.split("?")[1]) {
+                    var queryString = window.location.href.split("?")[1];
+                    var queryValues = queryString.split("&")
+                    queryValues.forEach(function (value) {
+                    var result = value.split("=");
+                    if (result) {
+                            queryParams[result[0]] = result[1]
+                        }
+                    });
+                }
+                return queryParams;
+            }
+            function initializeBot(){
+                var iframe = document.createElement('iframe');
+                var url = getUrl();
+                var queryParams = parseQueryParams();
+                url+= '?integratedDomain='+window.location.origin;
+                
+                /* code snippet adds query params to the url*/
+                if(Object.keys(queryParams).length){
+                    for(var query in queryParams){
+                        url+='&'+query+'='+queryParams[query];
+                    }
+                }
+                iframe.src = url;
+                iframe.id = 'chatBotContainer';
+                document.querySelector('body').appendChild(iframe);
+            }
+            initializeBot();
+            handleEvents();
+        }
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
